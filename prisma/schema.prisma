@@ -9,14 +9,18 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  fullName  String
-  email     String   @unique
-  password  String
-  cart      Cart[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  orders    Order[]
+  id               Int               @id @default(autoincrement())
+  fullName         String
+  email            String            @unique
+  password         String
+  role             UserRole          @default(USER)
+  provider         String?
+  providerId       String?
+  cart             Cart?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  orders           Order[]
+  verificationCode VerificationCode?
 }
 
 model Category {
@@ -64,7 +68,7 @@ model Ingridient {
 model Cart {
   id          Int        @id @default(autoincrement())
   user        User?      @relation(fields: [userId], references: [id])
-  userId      Int?
+  userId      Int?       @unique
   token       String
   totalAmount Int        @default(0)
   createdAt   DateTime   @default(now())
@@ -102,8 +106,23 @@ model Order {
   updatedAt   DateTime    @updatedAt
 }
 
+model VerificationCode {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int      @unique
+  code      String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, code])
+}
+
 enum OrderStatus {
   PENDING
   SUCCEEDED
   CANCELLED
+}
+
+enum UserRole {
+  USER
+  ADMIN
 }
