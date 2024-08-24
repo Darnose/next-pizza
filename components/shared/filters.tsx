@@ -1,14 +1,24 @@
+'use client';
+
 import React from 'react';
 import { Title } from './title';
 import { FilterCheckbox, RangeSlider } from '../shared';
 import { Input } from '../ui';
 import { CheckboxFiltersGroup } from './checkbox-filters-group';
+import { useFilterIngredients } from '@/hooks/useFilterIngredients';
 
 interface Props {
   className?: string;
 }
 
 export const Filters: React.FC<Props> = ({ className }) => {
+  const { ingredients, loading } = useFilterIngredients();
+
+  const items = ingredients.map((ingredient) => ({
+    text: ingredient.name,
+    value: ingredient.id.toString(),
+  }));
+
   return (
     <div className={className}>
       <Title text="Фильтрация" size="sm" className="mb-5 font-bold" />
@@ -28,31 +38,12 @@ export const Filters: React.FC<Props> = ({ className }) => {
         </div>
         <RangeSlider min={0} max={5000} step={10} value={[0, 5000]} />
         <CheckboxFiltersGroup
-          title="Ингридиенты"
+          title="Ингредиенты"
           className="mt-5"
           limit={6}
-          defaultItems={[
-            { text: 'Сырный соус', value: '1' },
-            { text: 'Сыр', value: '2' },
-            { text: 'Томаты', value: '3' },
-            { text: 'Помидоры', value: '4' },
-            { text: 'Лук', value: '5' },
-            { text: 'Огурец', value: '6' },
-            { text: 'Лосось', value: '7' },
-            { text: 'Креветки', value: '8' },
-            { text: 'Капуста', value: '9' },
-          ]}
-          items={[
-            { text: 'Сырный соус', value: '1' },
-            { text: 'Сыр', value: '2' },
-            { text: 'Томаты', value: '3' },
-            { text: 'Помидоры', value: '4' },
-            { text: 'Лук', value: '5' },
-            { text: 'Огурец', value: '6' },
-            { text: 'Лосось', value: '7' },
-            { text: 'Креветки', value: '8' },
-            { text: 'Капуста', value: '9' },
-          ]}
+          defaultItems={items.slice(0, 6)}
+          items={items}
+          loading={loading}
         />
       </div>
     </div>
