@@ -12,7 +12,7 @@ interface Props {
 }
 
 export const Filters: React.FC<Props> = ({ className }) => {
-  const { ingredients, loading } = useFilterIngredients();
+  const { ingredients, loading, selectedIds, OnAddId } = useFilterIngredients();
 
   const items = ingredients.map((ingredient) => ({
     text: ingredient.name,
@@ -25,8 +25,8 @@ export const Filters: React.FC<Props> = ({ className }) => {
 
       {/* Верхние чекбоксы */}
       <div className="flex flex-col gap-4">
-        <FilterCheckbox text="Можно собирать" value="1" />
-        <FilterCheckbox text="Новинки" value="2" />
+        <FilterCheckbox name="top" text="Можно собирать" value="1" />
+        <FilterCheckbox name="t213" text="Новинки" value="2" />
       </div>
 
       {/* Фильтр цен */}
@@ -39,11 +39,14 @@ export const Filters: React.FC<Props> = ({ className }) => {
         <RangeSlider min={0} max={5000} step={10} value={[0, 5000]} />
         <CheckboxFiltersGroup
           title="Ингредиенты"
+          name="ingredients"
           className="mt-5"
           limit={6}
           defaultItems={items.slice(0, 6)}
           items={items}
           loading={loading}
+          onClickCheckbox={OnAddId}
+          selectedIds={selectedIds}
         />
       </div>
     </div>
